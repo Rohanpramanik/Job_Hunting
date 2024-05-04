@@ -1,9 +1,9 @@
 import './App.css';
-
+import FilterOption from './components/FilterOption';
 function App() {
   return (
     <div className="App">
-      components
+      <FilterOption />
     </div>
   );
 }
