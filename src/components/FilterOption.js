@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Select from "react-select";
-import "../style/FilterOption.css"
+import "../style/FilterOption.css";
 
-const FilterOption = () => {
-  const [value, setValue] = useState(null);
-  
+const FilterOption = ({ jobsData, setFilteredJobs }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const filterOptions = [
     {
       name: "Role",
@@ -29,7 +29,6 @@ const FilterOption = () => {
         { value: "101-200", label: "101-200" },
         { value: "201-500", label: "201-500" },
         { value: "500+", label: "500+" },
-
       ],
     },
     {
@@ -68,35 +67,92 @@ const FilterOption = () => {
         { value: "70L", label: "70L" },
       ],
     },
-    {
-      name: "Search Company Name",
-      options: [
-        { value: "frontend", label: "frontend" },
-        { value: "backend", label: "backend" },
-        { value: "fullstack", label: "fullstack" },
-        { value: "devops", label: "devops" },
-      ],
-    },
   ];
-  const handleClick = {};
-  const handleSearchCompany = {};
+
+  const handleClick = (selectedOption, filterName) => {
+    console.log(selectedOption);
+    let updatedJobs = jobsData;
+    if (filterName === "Role") {
+      console.log("role");
+      updatedJobs = updatedJobs.filter((job) =>
+        selectedOption.some(
+          (option) => option.value.toLowerCase() === job.jobRole.toLowerCase()
+        )
+      );
+    } else if (filterName === "Name Of Employees") {
+      updatedJobs = updatedJobs.filter((job) =>
+        selectedOption.some((option) => {
+          const [min, max] = option.value.split("-");
+          return (
+            job.numberOfEmployees >= parseInt(min) &&
+            job.numberOfEmployees <= parseInt(max)
+          );
+        })
+      );
+    } else if (filterName === "Experience") {
+      updatedJobs = updatedJobs.filter((job) =>
+        selectedOption.some((option) => option.value == job.minExp)
+      );
+    } else if (filterName === "Remote") {
+      const item = selectedOption.map((item) => item.value);
+      if (
+        item.includes("Hybrid") ||
+        (item.includes("In-Office") && item.includes("Remote"))
+      ) {
+        updatedJobs = jobsData;
+      } else if (item.includes("Remote")) {
+        updatedJobs = updatedJobs.filter((job) =>
+          selectedOption.some(
+            (option) =>
+              option.value.toLowerCase() === job.location.toLowerCase()
+          )
+        );
+      }
+    } else if (filterName === "Minimum Base Pay Salary") {
+      updatedJobs = updatedJobs.filter((job) =>
+        selectedOption.some((option) => {
+          const minSalary = parseInt(option.value.replace("L", "")) * 100000;
+          return job.salary >= minSalary;
+        })
+      );
+    }
+    setFilteredJobs(updatedJobs);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    const filteredData = jobsData.filter((job) =>
+      job.companyName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredJobs(filteredData);
+  };
 
   return (
     <div className="filter-container">
       {filterOptions.map((item) => (
-        <div key={item.name} style={{margin:5}}>
+        <div key={item.name} style={{ margin: 5 }}>
           <Select
             className="filter-btn"
             options={item.options}
+            name={item.name}
             defaultValue={item.name}
             placeholder={item.name}
-            onChange={handleClick}
+            onChange={(selectedOption) =>
+              handleClick(selectedOption, item.name)
+            }
             isMulti
             isSearchable
             noOptionsMessage={() => "No Options"}
           />
         </div>
       ))}
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Search Company Name"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
     </div>
   );
 };

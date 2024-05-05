@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import JobCard from "./JobCard";
+import FilterOption from "./FilterOption";
 
 const Home = () => {
   const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const requestOptions = {
     method: "POST",
   };
@@ -15,6 +17,7 @@ const Home = () => {
       .then((response) => response.json())
       .then((data) => {
         setJobs(data.jdList);
+        setFilteredJobs(data.jdList);
       })
       .catch((error) => console.error(error));
   };
@@ -25,7 +28,12 @@ const Home = () => {
 
   return (
     <>
-      <JobCard data={jobs} />
+      <FilterOption
+        jobsData={jobs}
+        setFilteredJobs={setFilteredJobs}
+        filteredJobs={filteredJobs}
+      />
+      <JobCard data={filteredJobs} />
     </>
   );
 };

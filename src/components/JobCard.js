@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../style/Card.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Button, CardActions, Grid } from "@mui/material";
 
-const JobCard = ({data}) => {
-    // console.log(data);
-
-//   useEffect(() => {
-//     fetchDetails();
-//     // console.log(jobs);
-//   }, []);
-
-  if(data === undefined) return <h1>we can use shimmer UI here</h1>
+const JobCard = ({ data }) => {
+  if (data === undefined) return <h1>we can use shimmer UI here</h1>;
   return (
     <div className="card-container">
       {data.map((job) => (
@@ -29,7 +22,11 @@ const JobCard = ({data}) => {
                 />
               </Grid>
               <Grid className="img-desc">
-                <Typography variant="h5" component="div" className="img-desc-header">
+                <Typography
+                  variant="h5"
+                  component="div"
+                  className="img-desc-header"
+                >
                   {job.companyName}
                 </Typography>
                 <Typography variant="h5" component="div" className="sub-header">
@@ -64,7 +61,7 @@ const JobCard = ({data}) => {
                 className="exp-container"
               >
                 Minimum Experience
-                <h3>{job.minExp}</h3>
+                <h3>{job.minExp || "Not mentioned"}</h3>
               </Typography>
             </CardContent>
             <CardActions className="action-btn">
