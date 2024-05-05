@@ -84,7 +84,7 @@ const FilterOption = () => {
   return (
     <div className="filter-container">
       {filterOptions.map((item) => (
-        <div style={{margin:5}}>
+        <div key={item.name} style={{margin:5}}>
           <Select
             className="filter-btn"
             options={item.options}
